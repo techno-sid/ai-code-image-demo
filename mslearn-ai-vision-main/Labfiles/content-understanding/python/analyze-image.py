@@ -2,7 +2,11 @@ import sys, os
 from dotenv import load_dotenv
 
 # Add references
-
+# Add references
+from azure.ai.contentunderstanding import ContentUnderstandingClient
+from azure.ai.contentunderstanding.models import AnalysisInput, AnalysisResult
+from azure.core.exceptions import AzureError
+from azure.identity import DefaultAzureCredential
 
 
 
@@ -19,7 +23,12 @@ def main():
     
 
     # Set up Content Understanding client
-    
+    # Set up Content Understanding client
+    credential = DefaultAzureCredential()
+    client = ContentUnderstandingClient(
+        endpoint=endpoint,
+        credential=credential,
+        api_version=api_version)    
     
 
     while True:
@@ -37,7 +46,31 @@ def main():
 
 
         # Analyze the file
+        # Analyze the file
+        try:
+            poller = client.begin_analyze(
+                analyzer_id=analyzer_id,
+                inputs=[AnalysisInput(data=file_bytes)],
+            )
+            result: AnalysisResult = poller.result()
+        except AzureError as err:
+            print(f"[Azure Error]: {err.message}")
+            sys.exit(1)
+        except Exception as ex:
+            print(f"[Unexpected Error]: {ex}")
+            sys.exit(1)
 
+        for field in result.contents[0].fields:
+            field_value = result.contents[0].fields[field]
+            if field == "Description":
+                print(f"{field}:\n{field_value.value_string}\n")
+            elif field == "Tags":
+                print(f"{field}:")
+                if hasattr(field_value, "value_array") and field_value.value_array is not None:
+                    for tag in field_value.value_array:
+                        print("  -", tag.value_string)
+                else:
+                    print("  -", field_value.value_string)
 
 
 
