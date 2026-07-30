@@ -1,0 +1,10 @@
+Python Command : 
+python -m venv labenv 
+.\labenv\Scripts\Activate.ps1 
+pip install -r requirements.txt
+
+
+How to run it 
+cd /labfiles/gen-ai-vision/python
+az login 
+python agent-framework.py
