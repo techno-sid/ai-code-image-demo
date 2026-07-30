@@ -1,0 +1,16 @@
+Generate images with AI
+In this exercise, you use an image generation model to generate images. 
+You also use the OpenAI Python SDK to create a simple app 
+to generate images based on your prompts.
+
+
+Python Command : 
+python -m venv labenv 
+.\labenv\Scripts\Activate.ps1 
+pip install -r requirements.txt
+
+How to run it 
+cd mslearn-ai-agents/Labfiles/07-agent-frameworkc 
+az login 
+python agent-framework.py
+
